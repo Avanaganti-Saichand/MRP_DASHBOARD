@@ -137,4 +137,4 @@ st.markdown("""
 """)
 
 st.markdown("---")
-st.markdown("🔗 **Powered by Streamlit | Developed by Your Team 🚀**")
+st.markdown("🔗 **Powered by Streamlit | Developed by Vibe Team 🚀**")
