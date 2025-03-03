@@ -8,7 +8,8 @@ st.set_page_config(page_title="Provider Workload Dashboard", layout="wide")
 # Load the dataset
 @st.cache_data
 def load_data():
-    file_path = r"C:\Users\saich\Downloads\MRP_Dashboard\data\cleaned_data.csv"
+    file_path = "data/cleaned_data.csv"
+
     return pd.read_csv(file_path)
 
 df = load_data()
