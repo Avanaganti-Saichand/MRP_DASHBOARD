@@ -31,18 +31,30 @@ st.markdown("""
 st.title("📊 Provider Workload Analysis Dashboard")
 st.markdown("Analyze **Time in In Basket per Day** for **Internal Medicine providers** using live interactive charts.")
 
-# 🔍 Sidebar Filters
+# 🔍 Dynamic Sidebar Filters
 st.sidebar.header("🔍 **Filter Data**")
 
-service_area = st.sidebar.selectbox("📍 Select Service Area", ["All"] + list(df["ServiceArea"].unique()))
-provider_type = st.sidebar.selectbox("🩺 Select Provider Type", ["All"] + list(df["ProviderType"].unique()))
+# ✅ First Filter: Service Area (Only Shows Available Areas)
+available_service_areas = df["ServiceArea"].unique()
+service_area = st.sidebar.selectbox("📍 Select Service Area", ["All"] + list(available_service_areas))
 
-# ✅ Apply filters dynamically
+# ✅ Filter Data Based on First Selection
 filtered_df = df.copy()
 if service_area != "All":
     filtered_df = filtered_df[filtered_df["ServiceArea"] == service_area]
+
+# ✅ Second Filter: Provider Type (Only Shows Available Types)
+available_provider_types = filtered_df["ProviderType"].unique()
+provider_type = st.sidebar.selectbox("🩺 Select Provider Type", ["All"] + list(available_provider_types))
+
+# ✅ Apply Final Filter
 if provider_type != "All":
     filtered_df = filtered_df[filtered_df["ProviderType"] == provider_type]
+
+# 🛑 If No Data, Show Alert Instead of Blank Charts
+if filtered_df.empty:
+    st.warning("⚠️ No data available for the selected filters. Please try a different combination.")
+    st.stop()  # Stops further execution
 
 # 📌 Key Metrics with Explanations
 st.subheader("📌 **Key Metrics & Their Meaning**")
@@ -56,6 +68,23 @@ col1.markdown("**📝 What it means:** The average time providers spend daily on
 
 col2.metric("👨‍⚕️ **Total Providers Analyzed**", f"{total_providers}")
 col2.markdown("**📊 Why it matters:** The number of unique providers included in the analysis.")
+
+# 📌 🔥 **Personalized Improvement Recommendations**
+st.subheader("🚀 **Recommendations for Improvement**")
+
+if avg_time > 60:
+    st.error("⚠️ High administrative workload detected! Consider implementing automation tools or redistributing tasks among staff.")
+elif avg_time > 30:
+    st.warning("🔍 Moderate workload: Optimizing appointment scheduling and reducing unnecessary admin tasks may help.")
+else:
+    st.success("✅ Workload is well-balanced. Maintaining this level of efficiency is recommended!")
+
+if total_providers < 10:
+    st.error("⚠️ Limited number of providers! Increasing staff numbers or improving workflow efficiency could be beneficial.")
+elif total_providers < 30:
+    st.warning("🔍 Medium provider count: Monitoring workload distribution to ensure fair task assignments is advised.")
+else:
+    st.success("✅ Good number of providers available. Ensuring even workload distribution will maintain efficiency.")
 
 # 📈 Line Chart for Trends with Explanation
 st.subheader("📈 **Time Trend Analysis**")
@@ -94,3 +123,18 @@ st.markdown("""
 
 🚀 **Next Steps:** Use these insights to improve provider efficiency and reduce stress levels.
 """)
+
+# ✅ Footer Section
+st.markdown("---")
+st.markdown("📌 **How to Use the Dashboard:**")
+st.markdown("""
+1️⃣ Select a **Service Area** from the left sidebar.  
+2️⃣ Choose a **Provider Type** to filter data further.  
+3️⃣ Check **Key Metrics** to understand workload levels.  
+4️⃣ View **Time Trend Analysis** to track patterns over time.  
+5️⃣ Explore **Provider Workload Distribution** for role-based insights.  
+6️⃣ Identify the **Top 10 High-Workload Providers** and take action.  
+""")
+
+st.markdown("---")
+st.markdown("🔗 **Powered by Streamlit | Developed by Your Team 🚀**")
